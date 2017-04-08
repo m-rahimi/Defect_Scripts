@@ -1,7 +1,6 @@
 # Defect_Scripts
-## Predicting Boston Housing Prices
 
-ttt
+This repository contains the configurations and scripts that I used to simulation and characterize liquid crystal defects, published at Nature Communications. I employed molecular dynamics simulations and home made analatical tools to generate and characterize the defects.  
 
 ### Install
 
