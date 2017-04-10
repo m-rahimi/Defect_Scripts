@@ -7,7 +7,7 @@ This repository contains the configurations and scripts that I used to simulatio
 This project requires **Namd** for molecular dynamics simulations and **Python 2.7** for running analysis scripts. 
 
 - [Namd](http://www.ks.uiuc.edu/Research/namd/)
-- [Python 2.7]
+- [Python 2.7](https://www.python.org/downloads/release/python-2713/)
 - [NumPy](http://www.numpy.org/)
 - [MDAnalysis](http://www.mdanalysis.org/)
 
