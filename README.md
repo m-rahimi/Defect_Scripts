@@ -9,7 +9,7 @@ This project requires **Namd** for molecular dynamics simulations and **Python 2
 - [Namd](http://www.ks.uiuc.edu/Research/namd/)
 - [Python 2.7](https://www.python.org/downloads/release/python-2713/)
 - [NumPy](http://www.numpy.org/)
-- [MDAnalysis](http://www.mdanalysis.org/)
+- [MDAnalysis 0.14](http://www.mdanalysis.org/)
 
 
 I recommend install [Anaconda](https://www.continuum.io/downloads), a pre-packaged Python distribution that contains most of the necessary libraries and software for this project. 
