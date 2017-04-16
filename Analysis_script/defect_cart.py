@@ -17,9 +17,9 @@ import os
 
 parser = argparse.ArgumentParser(description="Read trajectory and coordinate file")
 
-parser.add_argument("-t", 
-                    action="store", nargs='?', 
-                    required=True, dest="traj", 
+parser.add_argument("-t",
+                    action="store", nargs='?',
+                    required=True, dest="traj",
                     help="specifies an .dcd file created using the '-pbc mol' option")
 parser.add_argument("-p",
                     action="store", nargs='?',
@@ -46,15 +46,15 @@ parser.add_argument("-ti",
                     required=False, dest="time", type=int,
                     help="time interval (ps)")
 parser.add_argument("-o",
-                    action="store", nargs='?', default="Output", 
+                    action="store", nargs='?', default="Output",
                     required=False, dest="output",
                     help="output filename")
 parser.add_argument("-b",
-                    action="store", nargs='?', default=int('0'), 
+                    action="store", nargs='?', default=int('0'),
                     required=False, dest="start_frame", type=int,
                     help="First frame to start reading trajectory")
 parser.add_argument("-e",
-                    action="store", nargs='?', default=float('inf'), 
+                    action="store", nargs='?', default=float('inf'),
                     required=False, dest="end_frame", type=int,
                     help="Last frame to stop readining trajectory")
 
@@ -108,7 +108,7 @@ deltav = (natoms/vslabx/vslaby)
 print "Number of atoms in each slab is around " + str(delta)
 print "Number of atoms in each slab is around " + str(deltav)
 num_frames = u.trajectory.numframes
-print "number of frames " + str(num_frames) 
+print "number of frames " + str(num_frames)
 if end_frame > num_frames :
    end_frame = num_frames
 print "read frame " + str(start_frame) + " to " + str(end_frame)
@@ -162,14 +162,14 @@ for curr_frame in xrange(0, num_frames) :
         print "Reading frame " + str(curr_frame) + " at " + str(curr_time) + " ps"
         coor_N = u.selectAtoms(atom_selection_N).coordinates()
         coor_C = u.selectAtoms(atom_selection_C).coordinates()
-        
+
         coor_N5 = u.selectAtoms(atom_selection_N5).coordinates()
         coor_N8 = u.selectAtoms(atom_selection_N8).coordinates()
-        
+
         if len(coor_N) != len(coor_C) :
            print >>sys.stderr, "Error: number of atoms in each group does not match"
            sys.exit(1)
-        
+
         #Calculate the opsition of each slab to have almost same number of atoms in each slab
         #The method is correct if the falctuation of volume is very small
         box = u.dimensions[0:3]
@@ -181,7 +181,7 @@ for curr_frame in xrange(0, num_frames) :
             binsx[i] = i*dx - box2[0]
         for i in range(nslaby+1):
             binsy[i] = i*dy - box2[1]
- 
+
         dxv = box[0]/vslabx
         dyv = box[1]/vslaby
         volumev = (dxv * dyv * box[2]) / 1000  # nm^3
@@ -189,10 +189,10 @@ for curr_frame in xrange(0, num_frames) :
             vbinsx[i] = i*dxv - box2[0]
         for i in range(vslaby+1):
             vbinsy[i] = i*dyv - box2[1]
-       
+
 #        # Calculate Q tensor for atoms
 #        # Calculate Q tensor for each slab by summing Q of atomes located in the slab
-#        # Calculate global Q 
+#        # Calculate global Q
 #        # Calculate number of atoms in each slab
         j_5CB = 0
         j_8CB = 0
@@ -207,14 +207,14 @@ for curr_frame in xrange(0, num_frames) :
             # apply periodic boundary conditions
             px = px - box[0]*anint(px/box[0]) + box2[0]
             py = py - box[1]*anint(py/box[1]) + box2[1]
-            
+
             vv = vector(loc_C,loc_N)
             vv = vv/np.linalg.norm(vv)
             Q = (3*np.dot(vv.T,vv) - I)/2.0 # factor 3/2 means that biggest eigvalu = nematic order
             Qt += Q
             Q = np.reshape(Q,(9))
-           
-            nx = int(px/dx) 
+
+            nx = int(px/dx)
             ny = int(py/dy)
             if nx == nslabx : nx -= 1
             if nx < 0 :       nx += 1
@@ -222,15 +222,15 @@ for curr_frame in xrange(0, num_frames) :
             if ny < 0 :       ny += 1
             dens[nx,ny] += 1
             Q_slab[nx,ny,:] = Q + Q_slab[nx,ny,:]
-            
-            if (j_5CB<natoms5 and np.allclose(loc_N, coor_N5[j_5CB])) : 
+
+            if (j_5CB<natoms5 and np.allclose(loc_N, coor_N5[j_5CB])) :
                 j_5CB += 1
                 dens5[nx,ny] += 1
-            if (j_8CB<natoms8 and np.allclose(loc_N, coor_N8[j_8CB])) : 
+            if (j_8CB<natoms8 and np.allclose(loc_N, coor_N8[j_8CB])) :
                 j_8CB += 1
                 dens8[nx,ny] += 1
 
-            nx = int(px/dxv) 
+            nx = int(px/dxv)
             ny = int(py/dyv)
             if nx == vslabx : nx -= 1
             if nx < 0 :       nx += 1
@@ -249,27 +249,27 @@ for x in range(nslabx):
   for y in range(nslaby):
       dens_f[x,y] = float(dens[x,y]) / nframes
       if dens_f[x,y]>delta*0.4 :
-         Q = Q_slab[x,y,:] / dens[x,y]  
+         Q = Q_slab[x,y,:] / dens[x,y]
          Q = np.reshape(Q,(3,3))
          e_value, e_vector = np.linalg.eigh(Q) # Calculate local order parameter
-         e_value = e_value[np.argsort(e_value)] 
+         e_value = e_value[np.argsort(e_value)]
          Scalar[x,y] = e_value[2]   # Larger eigenvalue is S
          Biaxial[x,y] = 2*e_value[1] + e_value[2]
-      else : 
+      else :
          Scalar[x,y] = 0.56
 
 for x in range(vslabx):
   for y in range(vslaby):
       densv_f[x,y] = float(densv[x,y]) / nframes
       if densv_f[x,y]>deltav*0.4 :
-         Q = Q_slabv[x,y,:] / densv[x,y]  
+         Q = Q_slabv[x,y,:] / densv[x,y]
          Q = np.reshape(Q,(3,3))
          e_value, e_vector = np.linalg.eigh(Q) # Calculate local order parameter
          Scalarv[x,y] = np.amax(e_value)   # Larger eigenvalue is S
          vector_x[x,y] = e_vector[0,np.argmax(e_value)]
          vector_y[x,y] = e_vector[1,np.argmax(e_value)]
          vector_z[x,y] = e_vector[2,np.argmax(e_value)]
-      else : 
+      else :
          Scalarv[x,y] = 0.56
 
 ##write Scalar
@@ -313,7 +313,7 @@ output_file2.close()
 #set pm3d interpolate 20,20 # interpolate the color
 #
 ## Set a nice color palette
-#set palette defined ( 0 "green", 1 "blue", 2 "red") 
+#set palette defined ( 0 "green", 1 "blue", 2 "red")
 #
 ##set title 'Free Energy Profile ({/Symbol D}F)'
 ## Axes
@@ -339,7 +339,7 @@ output_file2.close()
 ##set cbrange [30:80]
 ## Now plot
 #set multiplot
-#splot 'Output_scaler' using 1:2:4 notitle with lines lt 1, 'Output_vector' u ($1-5*$6):($2-5*$7):3:(10*$6):(10*$7):8 notitle with vector nohead lt 1 lc 0 
+#splot 'Output_scaler' using 1:2:4 notitle with lines lt 1, 'Output_vector' u ($1-5*$6):($2-5*$7):3:(10*$6):(10*$7):8 notitle with vector nohead lt 1 lc 0
 #
 #r = 21
 #zz = 0
