@@ -1,6 +1,6 @@
 # Defect_Scripts
 
-This repository contains the configurations and scripts that I used to simulation and characterize liquid crystal defects, published at Nature Communications. I employed molecular dynamics simulations and home made analytical tools to generate and characterize the defects.  
+This repository contains the configurations and scripts that I used to simulation and characterize liquid crystal defects, published at Nature Communications, [Segregation of liquid crystal mixtures in topological defects](https://www.nature.com/articles/ncomms15064). I employed molecular dynamics simulations and home made analytical tools to generate and characterize the defects.  
 
 ### Install
 
